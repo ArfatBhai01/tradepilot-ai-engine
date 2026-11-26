@@ -69,9 +69,9 @@ int main() {
     TradePilot::StrategyResult strat = TradePilot::evaluateStrategy(btc.price, ema, rsi, support, resistance);
     std::cout << "Strategy: " << TradePilot::decisionToString(strat.decision) << " Confidence " << strat.confidence << "%" << std::endl;
     std::cout << "Reason: " << strat.reason << std::endl;
-    const char* _botToken = std::getenv("8811675730:AAEZH1-5-iJsA8jmS4dOav9xsb73OSe_YLg");
+    const char* _botToken = std::getenv("TELEGRAM_BOT_TOKEN");
     std::string botToken = _botToken ? _botToken : "";
-    const char* _chatId = std::getenv("8606233084");
+    const char* _chatId = std::getenv("TELEGRAM_CHAT_ID");
     std::string chatId = _chatId ? _chatId : "";
     std::ostringstream ss;
     ss << std::fixed << std::setprecision(2);
