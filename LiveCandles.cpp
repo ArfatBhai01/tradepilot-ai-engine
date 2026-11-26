@@ -100,7 +100,7 @@ namespace TradePilot {
 
     bool fetchLiveCloses(const std::string& symbol, int limit, std::vector<double>& outCloses) {
         outCloses.clear();
-        std::string url = "https://api.binance.com/api/v3/klines?symbol=" + symbol + "&interval=1h&limit=" + std::to_string(limit);
+        std::string url = "https://data-api.binance.vision/api/v3/klines?symbol=" + symbol + "&interval=1h&limit=" + std::to_string(limit);
         std::string body = fetchUrl(url);
         if (body.empty()) return false;
         std::vector<Candle> candles;
@@ -111,7 +111,7 @@ namespace TradePilot {
 
     bool fetchLiveCandles(const std::string& symbol, int limit, std::vector<Candle>& outCandles) {
         outCandles.clear();
-        std::string url = "https://api.binance.com/api/v3/klines?symbol=" + symbol + "&interval=1h&limit=" + std::to_string(limit);
+        std::string url = "https://data-api.binance.vision/api/v3/klines?symbol=" + symbol + "&interval=1h&limit=" + std::to_string(limit);
         std::string body = fetchUrl(url);
         if (body.empty()) return false;
         return parseCandles(body, outCandles);

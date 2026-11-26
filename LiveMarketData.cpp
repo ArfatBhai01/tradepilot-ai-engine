@@ -18,7 +18,7 @@ static size_t WriteResponse(char* ptr, size_t size, size_t nmemb, void* userdata
 namespace TradePilot {
 
     bool fetchLivePrice(const std::string& symbol, double& outPrice) {
-        std::string url = "https://api.binance.com/api/v3/ticker/price?symbol=" + symbol;
+        std::string url = "https://data-api.binance.vision/api/v3/ticker/price?symbol=" + symbol;
         std::string response;
 
 #ifdef _WIN32
