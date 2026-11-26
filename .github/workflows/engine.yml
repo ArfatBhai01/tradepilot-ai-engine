@@ -1,0 +1,40 @@
+# TradePilotAI engine — GitHub Actions workflow
+# Har 15 minute mein engine chalata hai, PC off ho tab bhi.
+#
+# NOTE: WinINet -> curl porting ho gaya hai (26 Nov 2026).
+# TradePilotAI.cpp mein token/secret ab code mein nahi hain,
+# wo GitHub Secrets se aate hain.
+#
+# Token/secret kabhi is file mein nahi likhne — wo GitHub repo ke
+# Settings > Secrets mein dalne honge (naam neeche wale hi honge):
+#   TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, BOT_SERVER_SECRET, BALANCE_SERVER_URL
+
+name: TradePilotAI Engine
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'   # har 15 minute
+  workflow_dispatch:          # GitHub pe "Run workflow" button se manual run
+
+jobs:
+  run-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code lao
+        uses: actions/checkout@v4
+
+      - name: Build tools install karo
+        run: sudo apt-get update && sudo apt-get install -y g++ libcurl4-openssl-dev
+
+      - name: Engine build karo
+        run: |
+          g++ -std=c++17 -O2 -I. -IMarket -IIndicators -IRiskManagement -ISignals -ICore \
+            $(find . -name '*.cpp' -not -path './.git/*') -o engine -lcurl
+
+      - name: Engine chalao (signals bhejega)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          BOT_SERVER_SECRET: ${{ secrets.BOT_SERVER_SECRET }}
+          BALANCE_SERVER_URL: ${{ secrets.BALANCE_SERVER_URL }}
+        run: ./engine
