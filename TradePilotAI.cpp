@@ -26,13 +26,12 @@ int main() {
 
     double livePrice = 0;
     bool liveOk = TradePilot::fetchLivePrice("BTCUSDT", livePrice);
-    double btcPrice = liveOk ? livePrice : 95000.00;
-    if (liveOk) {
-        std::cout << "Live Price: $" << livePrice << " (Binance)" << std::endl;
+    if (!liveOk) {
+        std::cout << "Live price nahi mila, signal nahi bheja jayega" << std::endl;
+        return 0;
     }
-    else {
-        std::cout << "Live price nahi mila, demo price use ho raha hai" << std::endl;
-    }
+    double btcPrice = livePrice;
+    std::cout << "Live Price: $" << livePrice << " (Binance)" << std::endl;
 
     MarketData btc;
     btc.symbol = "BTC/USDT";
@@ -41,15 +40,12 @@ int main() {
     btc.displayMarketInfo();
 
     std::vector<double> closes;
-    std::vector<double> demoCloses = { 93000, 93500, 94000, 93800, 94500, 95000, 94800, 95500, 95200, 96000, 95800, 96500, 96200, 97000, 95000 };
     bool candlesLive = TradePilot::fetchLiveCloses("BTCUSDT", 15, closes);
-    if (candlesLive) {
-        std::cout << "Live Candles: " << closes.size() << " (Binance 1h)" << std::endl;
+    if (!candlesLive) {
+        std::cout << "Live candles nahi mile, signal nahi bheja jayega" << std::endl;
+        return 0;
     }
-    else {
-        closes = demoCloses;
-        std::cout << "Live candles nahi mile, demo candles use ho rahe hain" << std::endl;
-    }
+    std::cout << "Live Candles: " << closes.size() << " (Binance 1h)" << std::endl;
 
     std::vector<double> lows, highs;
     for (double c : closes) { lows.push_back(c - 300); highs.push_back(c + 300); }
@@ -69,6 +65,10 @@ int main() {
     TradePilot::StrategyResult strat = TradePilot::evaluateStrategy(btc.price, ema, rsi, support, resistance);
     std::cout << "Strategy: " << TradePilot::decisionToString(strat.decision) << " Confidence " << strat.confidence << "%" << std::endl;
     std::cout << "Reason: " << strat.reason << std::endl;
+    if (strat.decision == TradePilot::TradeDecision::NONE) {
+        std::cout << "No clear trend (NONE), signal nahi bheja jayega" << std::endl;
+        return 0;
+    }
     const char* _botToken = std::getenv("TELEGRAM_BOT_TOKEN");
     std::string botToken = _botToken ? _botToken : "";
     const char* _chatId = std::getenv("TELEGRAM_CHAT_ID");
