@@ -29,7 +29,7 @@ namespace TradePilot {
 
     bool sendTelegramSignal(const std::string& botToken, const std::string& chatId, const std::string& text) {
         std::string path = "/bot" + botToken + "/sendMessage";
-        std::string body = "{\"chat_id\":\"" + chatId + "\",\"text\":\"" + escapeJson(text) + "\"}";
+        std::string body = "{\"chat_id\":\"" + chatId + "\",\"parse_mode\":\"HTML\",\"text\":\"" + escapeJson(text) + "\"}";
 
 #ifdef _WIN32
         HINTERNET hInternet = InternetOpenA("TradePilotAI", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
