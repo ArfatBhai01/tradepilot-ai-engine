@@ -19,6 +19,19 @@
 #include "SignalServerSender.h"
 #include <cstdlib>
 
+// Price ko sahi decimals mein dikhao — chhote coins (DOGE, ADA) ke liye zyada decimals,
+// warna 2 decimals mein SL/TP entry jaisa hi dikhta hai.
+std::string formatPrice(double p) {
+    std::ostringstream os;
+    os << std::fixed;
+    if (p >= 1.0)       os << std::setprecision(2);
+    else if (p >= 0.1)  os << std::setprecision(4);
+    else if (p >= 0.01) os << std::setprecision(5);
+    else                os << std::setprecision(6);
+    os << p;
+    return os.str();
+}
+
 int main() {
     std::cout << "==============================" << std::endl;
     std::cout << "      TRADEPILOT AI" << std::endl;
@@ -103,9 +116,9 @@ int main() {
         ss << std::fixed << std::setprecision(2);
         ss << "\U0001F680 <b>TradePilot AI | SIGNAL</b>\n\n";
         ss << sideIcon << " <b>" << side << "</b> " << trendIcon << " " << display << "\n";
-        ss << "\U0001F4B0 Entry: <b>$" << livePrice << "</b>\n";
-        ss << "\U0001F6E1\U0000FE0F Stop Loss: $" << sigSL << "\n";
-        ss << "\U0001F3AF Take Profit: $" << sigTP << "\n";
+        ss << "\U0001F4B0 Entry: <b>$" << formatPrice(livePrice) << "</b>\n";
+        ss << "\U0001F6E1\U0000FE0F Stop Loss: $" << formatPrice(sigSL) << "\n";
+        ss << "\U0001F3AF Take Profit: $" << formatPrice(sigTP) << "\n";
         ss << "\U0001F4CA RSI: " << rsi << "\n";
         ss << "\U0001F4AA Confidence: " << strat.confidence << "%\n";
         ss << "\n\U000026A0\U0000FE0F Paper trading only. No profit guarantee.";
