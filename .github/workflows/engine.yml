@@ -1,6 +1,6 @@
 # TradePilotAI engine — GitHub Actions workflow
 # Har 15 minute mein engine chalata hai, PC off ho tab bhi.
-# Schedule re-registered 27 Nov 2026 - fresh commit to restart the 15-min cron.
+# Schedule re-registered 27 Nov 2026 - cron expression changed to force re-registration.
 #
 # NOTE: WinINet -> curl porting ho gaya hai (26 Nov 2026).
 # TradePilotAI.cpp mein token/secret ab code mein nahi hain,
@@ -14,7 +14,7 @@ name: TradePilotAI Engine
 
 on:
   schedule:
-    - cron: '*/15 * * * *'   # har 15 minute
+    - cron: '0,15,30,45 * * * *'   # har 15 minute (0,15,30,45)
   workflow_dispatch:          # GitHub pe "Run workflow" button se manual run
 
 jobs:
