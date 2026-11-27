@@ -90,19 +90,29 @@ int main() {
             std::cout << symbol << ": No clear trend (NONE), signal nahi bheja jayega" << std::endl;
             continue;
         }
-        std::ostringstream ss;
-        ss << std::fixed << std::setprecision(2);
-        ss << "TradePilot AI Signal\n" << display << ": " << TradePilot::decisionToString(strat.decision) << "\nPrice: $" << livePrice << "\nConfidence: " << strat.confidence << "%\nRSI: " << rsi << "\nPaper trading only - profit ki guarantee nahi hai.";
-        std::string signalText = ss.str();
-        bool sent = TradePilot::sendTelegramSignal(botToken, chatId, signalText);
-        (void)sent;
-        // C++ signal ko server pe bhejo (Mini App mein dikhega)
         std::string side = TradePilot::decisionToString(strat.decision);
         // SL/TP price ke % mein (har coin ke liye sahi): SL 1.5%, TP 3%
         double slDist = livePrice * 0.015;
         double tpDist = livePrice * 0.03;
         double sigSL = (side == "BUY") ? livePrice - slDist : livePrice + slDist;
         double sigTP = (side == "BUY") ? livePrice + tpDist : livePrice - tpDist;
+        // Professional signal message (HTML bold + emojis, all English)
+        std::string sideIcon = (side == "BUY") ? "\U0001F7E2" : "\U0001F534";
+        std::string trendIcon = (side == "BUY") ? "\U0001F4C8" : "\U0001F4C9";
+        std::ostringstream ss;
+        ss << std::fixed << std::setprecision(2);
+        ss << "\U0001F680 <b>TradePilot AI | SIGNAL</b>\n\n";
+        ss << sideIcon << " <b>" << side << "</b> " << trendIcon << " " << display << "\n";
+        ss << "\U0001F4B0 Entry: <b>$" << livePrice << "</b>\n";
+        ss << "\U0001F6E1\U0000FE0F Stop Loss: $" << sigSL << "\n";
+        ss << "\U0001F3AF Take Profit: $" << sigTP << "\n";
+        ss << "\U0001F4CA RSI: " << rsi << "\n";
+        ss << "\U0001F4AA Confidence: " << strat.confidence << "%\n";
+        ss << "\n\U000026A0\U0000FE0F Paper trading only. No profit guarantee.";
+        std::string signalText = ss.str();
+        bool sent = TradePilot::sendTelegramSignal(botToken, chatId, signalText);
+        (void)sent;
+        // C++ signal ko server pe bhejo (Mini App mein dikhega)
         bool serverSent = TradePilot::sendSignalToServer("https://arfuu0.pythonanywhere.com", serverSecret, symbol, side, livePrice, sigSL, sigTP, strat.confidence, rsi);
         std::cout << symbol << " Server Signal Sent: " << (serverSent ? "Yes" : "No") << std::endl;
         sentCount++;
