@@ -123,8 +123,11 @@ int main() {
         ss << "\U0001F4AA Confidence: " << strat.confidence << "%\n";
         ss << "\n\U000026A0\U0000FE0F Paper trading only. No profit guarantee.";
         std::string signalText = ss.str();
-        bool sent = TradePilot::sendTelegramSignal(botToken, chatId, signalText);
-        (void)sent;
+        // Telegram message BAND (Sam, 27 Nov 2026) - signals ab sirf Mini App mein dikhenge.
+        // Telegram notifications se pareshan tha, isliye ye line comment ki hai.
+        // Wapas chalu karne ke liye neeche wali line ka // hata do:
+        // bool sent = TradePilot::sendTelegramSignal(botToken, chatId, signalText);
+        // (void)sent;
         // C++ signal ko server pe bhejo (Mini App mein dikhega)
         bool serverSent = TradePilot::sendSignalToServer("https://arfuu0.pythonanywhere.com", serverSecret, symbol, side, livePrice, sigSL, sigTP, strat.confidence, rsi);
         std::cout << symbol << " Server Signal Sent: " << (serverSent ? "Yes" : "No") << std::endl;
